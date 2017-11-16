@@ -47,7 +47,7 @@ public class RedBlackTree {
     }
 
     public void insert_recurse(int value){
-    		Node focusNode = root;
+    	Node focusNode = root;
         while (focusNode != null && focusNode.value != null) {
             if (value < focusNode.value)
                 focusNode = focusNode.lChild;
