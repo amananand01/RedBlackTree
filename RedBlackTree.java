@@ -46,54 +46,56 @@ public class RedBlackTree {
         return check == check.parent.rChild;
     }
 
-    public void insert_recurse(Node newNode, int value){
-      if(root==null){
-        root = newNode;
-        //change color and parent and leafs
-      } else{
-        Node focusNode = root;
-        Node testParent ;
-
-        while(true){
-          testParent = focusNode;
-          if(value < focusNode.value){
-            focusNode = focusNode.lChild;
-            if(focusNode==null){
-              newNode.parent = testParent;
-              testParent.lChild=newNode;
-              break;
-            }
-          } else{
-            focusNode = focusNode.rChild;
-            if(focusNode==null){
-              newNode.parent = testParent;
-              testParent.rChild=newNode;
-              break;
-            }
-          }
+    public void insert_recurse(int value){
+    		Node focusNode = root;
+        while (focusNode != null && focusNode.value != null) {
+            if (value < focusNode.value)
+                focusNode = focusNode.lChild;
+            else if (value > focusNode.value)
+                focusNode = focusNode.rChild;
+            else
+                return;
         }
-      }
-      newNode.color = Node.RED;
+        Node newNode = new Node(value);
+        if (root==null)
+            root = newNode;
+        else {
+            Node parent = focusNode.parent;
+            newNode.parent = parent;
+            if (focusNode == parent.lChild)
+                parent.lChild = newNode;
+            else
+               parent.rChild = newNode;
+        }
+        newNode.color = Node.RED;
+        insert_repair_tree(newNode);
     }
 
     public void rotate_left(Node newNode){
-    	  System.out.println("In rotate left");
+//    	  System.out.println("In rotate left");
       Node parent=newNode.parent;
       Node grandParent=parent.parent;
-
+      
       parent.rChild=newNode.lChild; // Case1 //
       if(newNode.lChild!=null) newNode.lChild.parent=parent; // Case 2 //
       newNode.parent=grandParent; // Case 3 //
-      if(isLeftChild(parent)) grandParent.lChild = newNode; // Case 4 //
-      else grandParent.rChild=newNode;
+      
+      if (grandParent == null)
+          root = newNode;
+      else { // Case 4 //
+	      if(isLeftChild(parent)) grandParent.lChild = newNode; 
+	      else grandParent.rChild=newNode;
+      }
+      
       newNode.lChild=parent; // Case 5 //
       parent.parent=newNode; // Case 6 //
-	  System.out.println("Ending rotate left");
+      
+//	  System.out.println("Ending rotate left");
 
     }
 
     public void rotate_right(Node newNode){
-  	  System.out.println("In rotate right");
+//  	  System.out.println("In rotate right");
 
       Node parent=newNode.parent;
       Node grandParent=parent.parent;
@@ -102,79 +104,84 @@ public class RedBlackTree {
       parent.lChild=newNode.rChild; // Case1 //
       if(newNode.rChild!=null) newNode.rChild.parent=parent; // Case 2 //
       newNode.parent=grandParent; // Case 3 //
-      if(isLeftChild(parent)) grandParent.lChild = newNode; // Case 4 //
-      else grandParent.rChild=newNode;
+      
+      if (grandParent == null)
+          root = newNode;
+      else { // Case 4 //
+	      if(isLeftChild(parent)) grandParent.lChild = newNode; 
+	      else grandParent.rChild=newNode;
+      }
+      
       newNode.rChild=parent; // Case 5 //
       parent.parent=newNode; // Case 6 //
-	  System.out.println("Ending  rotate right");
+      
+//	  System.out.println("Ending  rotate right");
 
+    }
+    public void insert_case4(Node newNode,Node uncle) {
+    		Node parent = newNode.parent;
+
+	    	if(parent.color==Node.RED && uncle.color == Node.BLACK) {
+//	    		System.out.println("In insert 44444");
+	    		if ( isRightChild(newNode) && isLeftChild(newNode.parent) ){
+	  	          rotate_left(newNode);
+	  	      	  newNode=newNode.lChild;
+	    		}
+	  	    else if ( isLeftChild(newNode) && isRightChild(newNode.parent) ){
+	  	          rotate_right(newNode);
+	  	          newNode=newNode.rChild;
+	  	    }
+//	      	System.out.println("Ending insert 4");
+	    }
+	  	insert_case5(newNode);
     }
 
     public void insert_case5(Node newNode){
-        System.out.println("In insert_case 5");
+//        System.out.println("In insert_case 5");
+        //case 5
+	    Node parent = newNode.parent;
+	    Node grandParent=parent.parent;
+	    parent.color = Node.BLACK;
+	    grandParent.color = Node.RED;
         newNode.parent.color=Node.BLACK;
         newNode.parent.parent.color=Node.RED;
 
         if( isLeftChild(newNode) && isLeftChild(newNode.parent) )
           rotate_right(newNode.parent);
         else rotate_left(newNode.parent);
-  	    System.out.println("Ending insert 5");
-
+        
+//  	    System.out.println("Ending insert 5");
+  	    	
         }
-//      if(parent.parent==null) return;
-//      System.out.println("In inser_case 5");
-//      parent = newNode.parent;
-//      parent.color = Node.BLACK;
-//      grandParent.color = Node.RED;
-//      if( isLeftChild(newNode) && isLeftChild(newNode.parent) )
-//        rotate_right(newNode.parent);
-//      else rotate_left(newNode.parent);
-
 
     public void insert_repair_tree(Node newNode){
-  	  System.out.println("NExt node starts");
 
     	  //case 1
-      if(newNode.parent==null){
+      if(newNode==root){
         newNode.color=Node.BLACK;
-      }
-      //case 2
-      else if (newNode.parent.color == Node.BLACK) {  }
+        }
       //case 3
       else if (newNode.parent.color == Node.RED){
-
-        Node uncle=null;
+    	  
+        Node uncle;
         Node parent = newNode.parent;
         Node grandParent = parent.parent;
-        if (isLeftChild(parent)) uncle = grandParent.rChild;
-        else uncle = grandParent.lChild;
-
-        if (uncle==null) {
-        		System.out.println("Uncle is null");
-
-        		System.out.println("In insert 44444");
-	    	    	if ( isRightChild(newNode) && isLeftChild(newNode.parent) ){
-	    	        rotate_right(newNode);
-	    	    	    newNode=newNode.lChild;
-	    	    	 }
-	            else if ( isLeftChild(newNode) && isRightChild(newNode.parent) ){
-	                rotate_left(newNode);
-	                newNode=newNode.rChild;
-	             }
-	    	    	//case 5
-	    	    	insert_case5(newNode);
-	    	    	System.out.println("Ending insert 4");
-	    	    	return;
-        }
-        else if (uncle.color==Node.RED){
+        
+        if (isLeftChild(parent)) 
+        		uncle = grandParent.rChild;
+        else 
+        		uncle = grandParent.lChild;
+        
+        if (parent.color==Node.RED && uncle.color==Node.RED){
           parent.color = Node.BLACK;
           uncle.color = Node.BLACK;
           grandParent.color = Node.RED;
           insert_repair_tree(grandParent);
           return;
         }
+        //case 4 & 5
+        insert_case4(newNode,uncle);
       }
-	 System.out.println("..............");
     }
     /**
      * Insert an integer to the tree
@@ -182,9 +189,7 @@ public class RedBlackTree {
      */
     public void insert(int value) {
         // TODO: Lab 2 Part 2-2 -- insert an integer into the tree
-        Node newNode = new Node(value);
-        insert_recurse(newNode,value);
-        insert_repair_tree(newNode);
+        insert_recurse(value);
     }
 
     /**
@@ -197,12 +202,12 @@ public class RedBlackTree {
 
     public void inOrderTraverseTree(Node focusNode){
       if (focusNode != null) {
-			// Traverse the left node
-			inOrderTraverseTree(focusNode.lChild);
-      System.out.print(focusNode + " "+ focusNode.color+ " ");
-      System.out.println(focusNode.color ? "BLACK":"RED");
-			// Traverse the right node
-			inOrderTraverseTree(focusNode.rChild);
+    	  	// Traverse the left node
+		inOrderTraverseTree(focusNode.lChild);
+	    System.out.print(focusNode + " "+ focusNode.color+ " ");
+	    System.out.println(focusNode.color ? "BLACK":"RED");
+		// Traverse the right node
+		inOrderTraverseTree(focusNode.rChild);
       }
     }
 
