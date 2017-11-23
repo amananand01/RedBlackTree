@@ -47,7 +47,7 @@ public class RedBlackTree {
     }
 
     public void insert_recurse(int value){
-    	Node focusNode = root;
+    		Node focusNode = root;
         while (focusNode != null && focusNode.value != null) {
             if (value < focusNode.value)
                 focusNode = focusNode.lChild;
@@ -72,7 +72,7 @@ public class RedBlackTree {
     }
 
     public void rotate_left(Node newNode){
-//    	  System.out.println("In rotate left");
+
       Node parent=newNode.parent;
       Node grandParent=parent.parent;
       
@@ -90,12 +90,11 @@ public class RedBlackTree {
       newNode.lChild=parent; // Case 5 //
       parent.parent=newNode; // Case 6 //
       
-//	  System.out.println("Ending rotate left");
 
     }
 
     public void rotate_right(Node newNode){
-//  	  System.out.println("In rotate right");
+
 
       Node parent=newNode.parent;
       Node grandParent=parent.parent;
@@ -114,15 +113,13 @@ public class RedBlackTree {
       
       newNode.rChild=parent; // Case 5 //
       parent.parent=newNode; // Case 6 //
-      
-//	  System.out.println("Ending  rotate right");
 
     }
     public void insert_case4(Node newNode,Node uncle) {
     		Node parent = newNode.parent;
 
 	    	if(parent.color==Node.RED && uncle.color == Node.BLACK) {
-//	    		System.out.println("In insert 44444");
+
 	    		if ( isRightChild(newNode) && isLeftChild(newNode.parent) ){
 	  	          rotate_left(newNode);
 	  	      	  newNode=newNode.lChild;
@@ -131,13 +128,12 @@ public class RedBlackTree {
 	  	          rotate_right(newNode);
 	  	          newNode=newNode.rChild;
 	  	    }
-//	      	System.out.println("Ending insert 4");
+
 	    }
 	  	insert_case5(newNode);
     }
 
     public void insert_case5(Node newNode){
-//        System.out.println("In insert_case 5");
         //case 5
 	    Node parent = newNode.parent;
 	    Node grandParent=parent.parent;
@@ -149,8 +145,6 @@ public class RedBlackTree {
         if( isLeftChild(newNode) && isLeftChild(newNode.parent) )
           rotate_right(newNode.parent);
         else rotate_left(newNode.parent);
-        
-//  	    System.out.println("Ending insert 5");
   	    	
         }
 
@@ -204,8 +198,8 @@ public class RedBlackTree {
       if (focusNode != null) {
     	  	// Traverse the left node
 		inOrderTraverseTree(focusNode.lChild);
-	    System.out.print(focusNode + " "+ focusNode.color+ " ");
-	    System.out.println(focusNode.color ? "BLACK":"RED");
+	    System.out.println(focusNode + " "+ focusNode.color+ " ");
+//	    System.out.println(focusNode.color ? "BLACK":"RED");
 		// Traverse the right node
 		inOrderTraverseTree(focusNode.rChild);
       }
@@ -230,32 +224,13 @@ public class RedBlackTree {
      */
     public static void main(String[] args) {
         RedBlackTree rbt = new RedBlackTree();
-
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
             rbt.insert((int) (Math.random() * 200));
-
+        }
+        		
         assert rbt.root.color == RedBlackTree.Node.BLACK;
-        System.out.println(rbt.root);           // This helps to figure out the tree structure
+        System.out.println("Root: "+rbt.root);           // This helps to figure out the tree structure
         System.out.println(rbt);
-
-        //
-        // rbt.insert(23);
-        // rbt.insert(20);
-        // rbt.insert(24);
-        // rbt.insert(19);
-        // rbt.insert(28);
-
-        // System.out.println(rbt.contains(23));
-        // System.out.println(rbt.contains(33));
-        // System.out.println(rbt.contains(19));
-        //
-        // System.out.println(rbt.root);           // This helps to figure out the tree structure
-        // System.out.println(rbt);
-        // rbt.insert(4);rbt.insert(2);rbt.insert(8);rbt.insert(1);
-        // rbt.insert(3);rbt.insert(6);rbt.insert(9);rbt.insert(0);
-        // rbt.insert(5);rbt.insert(7);
-        // System.out.println(rbt.root);           // This helps to figure out the tree structure
-        // System.out.println(rbt);
     }
 
 
